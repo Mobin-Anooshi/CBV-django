@@ -6,6 +6,9 @@
 <h1>Home {{ name }}</h1>
 
 {% for car in object_list %}
-    <p><a href="{% url 'home:car_detail' car.year car.name car.owner %}">{{ car.name }}</a></p>
+    <p><a href="{% url 'home:car_detail' car.year car.name car.owner %}">{{ car.name }}</a>
+    <a href="{% url 'home:car_delete' car.id %}">Delete</a>
+    <a href="{% url 'home:car_update' car.id %}">Update</a>
+    </p>
 {% endfor %}
 {% endblock %}

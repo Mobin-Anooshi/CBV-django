@@ -1,14 +1,16 @@
 from django.shortcuts import render
-from django.template.context_processors import request
 from django.views import View
-from django.views.generic import TemplateView, RedirectView,DetailView ,CreateView
+from django.views.generic import TemplateView, RedirectView,DetailView ,CreateView,DeleteView,UpdateView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.contrib import messages
 from .models import  Car
 from .forms import CarCreateForm
 from django.urls import reverse_lazy
-# Create your views here.
+from django.contrib.auth import views as auth_view
+from .serializers import CarSerializers
+from rest_framework.generics import ListAPIView,RetrieveAPIView,DestroyAPIView,CreateAPIView,UpdateAPIView,ListCreateAPIView
+
 
 
 class HomeView(View):
@@ -97,5 +99,46 @@ class Home7View(CreateView):
         messages.success(self.request,'create car successfully','success')
         return super().form_valid(form)
 
+class Home8View(DeleteView):
+    model = Car
+    success_url = reverse_lazy('home:home')
+    template_name = 'home/delete.html'
 
+class Home9View(UpdateView):
+    model = Car
+    fields = ['name','year']
+    success_url = reverse_lazy('home:home')
+    template_name = 'home/update.html'
 
+class AccountsLoginView(auth_view.LoginView):
+    template_name = 'home/login.html'
+    next_page = reverse_lazy('home:home')
+
+class AccountsLogout(auth_view.LogoutView):
+    next_page = reverse_lazy('home:home')
+
+class HomeApiView(ListAPIView):
+    serializer_class = CarSerializers
+    queryset = Car.objects.all()
+
+class SingleCarView(RetrieveAPIView):
+    serializer_class =  CarSerializers
+    queryset = Car.objects.all()
+    # lookup_field = 'name'
+
+class CarDeleteView(DestroyAPIView):
+    serializer_class = CarSerializers
+    queryset = Car.objects.all()
+    lookup_field = 'name'
+
+class CarCreateView(CreateAPIView):
+    serializer_class = CarSerializers
+    queryset = Car.objects.all()
+
+class CArUpdateView(UpdateAPIView):
+    serializer_class = CarSerializers
+    queryset = Car.objects.all()
+
+class CarListCreateView(ListCreateAPIView):
+    serializer_class = CarSerializers
+    queryset = Car.objects.all()
